@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+table {
+	border-collapse: collapse;
+	border: 1px solid;
+	width: 100%;
+}
+
+table td {
+	border: 1px solid;
+	padding: 4px;
+}
+
+form ul li {
+	list-style:none;
+	padding: 8px;
+}
+
+form ul li label {
+	width: 5em;
+	display: inline-block;
+}
+
+form textarea {
+	vertical-align: middle;
+	width: 300px;
+}
+
+form input[type="text"] {
+	width: 300px;
+}

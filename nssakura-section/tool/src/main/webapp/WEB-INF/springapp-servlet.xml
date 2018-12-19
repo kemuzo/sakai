@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+">
+
+  <task:annotation-driven proxy-target-class="true" />
+
+  <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+    <property name="viewClass"
+      value="org.springframework.web.servlet.view.JstlView" />
+<!-- 		<property name="prefix" value="/WEB-INF/jsp/" /> -->
+    <property name="suffix" value=".jsp" />
+    <property name="order" value="10" />
+  </bean>
+
+  <bean id="multipartResolver"
+    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <property name="maxUploadSize" value="1000000" />
+  </bean>
+
+  <!--  AddMemberService  -->
+  <bean id="org.sakaiproject.nssakura.section.tool.AddMemberService"
+    class="org.sakaiproject.nssakura.section.tool.AddMemberService">
+      <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic" />
+        <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+        <property name="dao" ref="org.sakaiproject.nssakura.section.dao.NSSectionJobDao" />
+  </bean>
+
+  <bean class="org.sakaiproject.nssakura.section.tool.ExceptionResolverImpl"/>
+  <bean name="/index.htm"
+    class="org.sakaiproject.nssakura.section.tool.NssakuraSectionController"
+    scope="session" init-method="init">
+    <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic"/>
+  </bean>
+
+  <bean name="/addSections.htm"
+    class="org.sakaiproject.nssakura.section.tool.NssakuraSectionAddController"
+    scope="session" init-method="init">
+    <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic"/>
+    <property name="nssakuraSection" ref="org.sakaiproject.nssakura.section.logic.NssakuraSection"/>
+  </bean>
+
+  <bean name="/assignTa.htm"
+    class="org.sakaiproject.nssakura.section.tool.NssakuraAssignTaController"
+    scope="session" init-method="init">
+    <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic"/>
+  </bean>
+
+  <bean name="/assignStudent.htm"
+    class="org.sakaiproject.nssakura.section.tool.NssakuraAssignStudentController"
+    scope="session" init-method="init">
+    <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic"/>
+  </bean>
+
+  <bean name="/importMembers.htm"
+    class="org.sakaiproject.nssakura.section.tool.NssakuraImportMembersController"
+    scope="session" init-method="init">
+    <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic"/>
+    <property name="addMemberService" ref="org.sakaiproject.nssakura.section.tool.AddMemberService"/>
+  </bean>
+
+  <bean name="/editSection.htm"
+    class="org.sakaiproject.nssakura.section.tool.NssakuraSectionEditController"
+    scope="session" init-method="init">
+    <property name="projectLogic" ref="org.sakaiproject.nssakura.section.logic.ProjectLogic"/>
+  </bean>
+
+</beans>

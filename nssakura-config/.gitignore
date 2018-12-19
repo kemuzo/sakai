@@ -45,7 +45,3 @@ bin
 *.swp
 *.bak
 logs
-
-**/target
-\$\{*
-.m2

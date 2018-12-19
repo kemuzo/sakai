@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+               "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- define the list of HBM mapping files -->
+	<bean id="learningStatus.HBMMappingList" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<value>org/sakaiproject/nssakura/learningStatus/dao/hbm/NSMessage.hbm.xml</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	<!-- create a DAO bean, use the hibernate implementation -->
+	<bean
+		id="org.sakaiproject.nssakura.learningStatus.dao.NSMessageDaoTarget"
+		class="org.sakaiproject.nssakura.learningStatus.dao.NSMessageDaoImpl"
+		init-method="init">
+		<property
+			name="sessionFactory"
+			ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+	</bean>
+
+	<!-- This wraps our DAO so that the transactions are managed -->
+	<bean
+		id="org.sakaiproject.nssakura.learningStatus.dao.NSMessageDao"
+		class="org.sakaiproject.genericdao.springutil.CurrentClassLoaderTxProxyFactoryBean">
+		<property
+			name="transactionManager"
+			ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+		<property
+			name="target"
+			ref="org.sakaiproject.nssakura.learningStatus.dao.NSMessageDaoTarget" />
+		<property
+			name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="count*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+  <hibernate-mapping package="org.sakaiproject.nssakura.config.model">
+  <class name="NSConfig" table="ns_config">
+    <id
+        name="name"
+        type="string"
+        length="99"/>
+    <property
+        name="value"
+        type="string"
+        length="255"
+        not-null="false"/>
+    <property
+        name="description"
+        type="string"
+        length="255"
+        not-null="false"/>
+  </class>
+  <query name="findByName">
+    <![CDATA[FROM NSConfig config WHERE config.name = :name]]>
+  </query>
+  <query name="findAll">
+    <![CDATA[FROM NSConfig config ORDER BY config.name]]>
+  </query>
+</hibernate-mapping>

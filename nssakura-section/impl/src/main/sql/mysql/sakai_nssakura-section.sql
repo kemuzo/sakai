@@ -1,0 +1,1 @@
+INSERT INTO CM_SEC_CATEGORY_T VALUES('organization','Organization');

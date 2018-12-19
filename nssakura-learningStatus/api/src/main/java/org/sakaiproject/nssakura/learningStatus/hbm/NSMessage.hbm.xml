@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+  <hibernate-mapping package="org.sakaiproject.nssakura.learningStatus.model">
+  <class name="MessageDaoModel" table="ns_message_tb">
+		<id name="id" type="long">
+	    	<generator class="native">
+                <param name="sequence">NSMAIL_ID_SEQ</param>
+	    	</generator>
+		</id>
+    <property name="siteId" type="string" length="255" not-null="true" column="site_id" index="NSMAILBBS_SITE_ID_KEY"/>
+    <property name="userId" type="string" length="255"  column="user_id"/>
+	<property name="sendDate" type="java.util.Date" column="start_date"/>
+	<property name="recipientTo" type="text"  column="recipient_to" />
+	<property name="recipientRole" type="text"  column="recipient_role" />
+	<property name="recipientSectionGroup" type="text"  column="recipient_section_group" />
+	<property name="subject" type="string"  column="subject" />
+	<property name="content" type="text"  column="content" />
+  </class>
+
+	<query name="findById">
+		<![CDATA[from org.sakaiproject.nssakura.learningStatus.model.MessageDaoModel message
+			where message.id = :id]]>
+  	</query>
+	<query name="findBySiteIdAndUserId">
+		<![CDATA[from org.sakaiproject.nssakura.learningStatus.model.MessageDaoModel message
+			where message.siteId = :siteId and message.userId = :userId]]>
+  	</query>
+	<query name="findMessagesBySiteId">
+		<![CDATA[from org.sakaiproject.nssakura.learningStatus.model.MessageDaoModel message
+			where message.siteId = :siteId]]>
+  	</query>
+</hibernate-mapping>

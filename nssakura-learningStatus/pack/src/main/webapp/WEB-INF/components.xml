@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <import resource="spring-hibernate.xml" />
+  <!-- database beans -->
+    <bean id="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlDefault" class="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlDefault" scope="singleton" />
+    <bean id="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlOracle" class="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlOracle" scope="singleton" />
+    <bean id="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlMySql" class="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlMySql" scope="singleton" />
+
+  <!--  SakaiProxy -->
+   <bean id="org.sakaiproject.nssakura.learningStatus.logic.LearningStatusSakaiProxy"
+      class="org.sakaiproject.nssakura.learningStatus.logic.LearningStatusSakaiProxyImpl"
+        init-method="init">
+        <!-- API injection -->
+        <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+        <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+        <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
+        <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
+    <property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService" />
+    <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+    <property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+    <property name="gradebookService" ref="org.sakaiproject.service.gradebook.GradebookService"/>
+    <property name="sectionManager" ref="org.sakaiproject.section.api.SectionManager" />
+      <property name="nssakuraSection" ref="org.sakaiproject.nssakura.section.logic.NssakuraSection"/>
+      <property name="sqlService" ref="org.sakaiproject.db.api.SqlService"/>
+    <property name="databaseBeans">
+           <map>
+              <entry key="default"><ref bean="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlDefault"/></entry>
+              <entry key="oracle" ><ref bean="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlOracle" /></entry>
+              <entry key="mysql"  ><ref bean="org.sakaiproject.nssakura.learningStatus.db.BaseHandlerSqlMySql"  /></entry>
+           </map>
+        </property>
+      <property name="userNotificationService" ref="org.sakaiproject.nssakura.learningStatus.logic.UserNotificationService" />
+      <property name="dao" ref="org.sakaiproject.nssakura.learningStatus.dao.NSMessageDao" />
+  </bean>
+
+  <!-- ProjectLogic -->
+  <bean id="org.sakaiproject.nssakura.learningStatus.logic.ProjectLogic"
+      class="org.sakaiproject.nssakura.learningStatus.logic.ProjectLogicImpl"
+      init-method="init" >
+    </bean>
+
+  <!-- Add our HBM files to the Sakai global session factory -->
+  <bean
+    id="org.sakaiproject.nssakura.learningStatus.hbm.HBMMappingList"
+    class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+    <property name="mappingResources">
+      <list>
+        <value>org/sakaiproject/nssakura/learningStatus/hbm/NSMessage.hbm.xml</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- UserNotificationService -->
+  <bean id="org.sakaiproject.nssakura.learningStatus.logic.UserNotificationService"
+      class="org.sakaiproject.nssakura.learningStatus.logic.UserNotificationService"
+    >
+    </bean>
+
+</beans>

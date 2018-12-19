@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+  <hibernate-mapping package="org.sakaiproject.nssakura.section.model">
+  <class name="NSSectionJob" table="ns_section_job">
+		<id name="id" type="long">
+	    	<generator class="native">
+                <param name="sequence">NSSECTIONJOB_ID_SEQ</param>
+	    	</generator>
+		</id>
+    <property name="siteId" type="string" length="255" not-null="true" column="site_id" index="NSMAILBBS_SITE_ID_KEY"/>
+    <property name="userId" type="string" length="255"  column="user_id"/>
+	<property name="startDate" type="java.util.Date" column="start_date"/>
+	<property name="endDate" type="java.util.Date" column="end_date"/>
+	<property name="addUserNum" type="integer"  column="add_user_num" />
+	<property name="alterUserNum" type="integer"  column="alter_user_num" />
+	<property name="addMemberNum" type="integer"  column="add_member_num" />
+	<property name="errorUserNum" type="integer"  column="error_user_num" />
+	<property name="processUserNum" type="integer" column="process_user_num" />
+  </class>
+
+	<query name="findBySiteId">
+		<![CDATA[from org.sakaiproject.nssakura.section.model.NSSectionJob nssectionjob
+			where nssectionjob.siteId = :siteId ]]>
+  	</query>
+	<query name="findNumBySiteId">
+		<![CDATA[select count(*) from org.sakaiproject.nssakura.section.model.NSSectionJob nssectionjob
+			where nssectionjob.siteId = :siteId ]]>
+  	</query>
+	<query name="findProcessingBySiteId">
+		<![CDATA[from org.sakaiproject.nssakura.section.model.NSSectionJob nssectionjob
+			where nssectionjob.siteId = :siteId and endDate = null]]>
+  	</query>
+</hibernate-mapping>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <!-- database beans -->
+  <bean id="org.sakaiproject.nssakura.section.db.BaseHandlerSqlDefault" class="org.sakaiproject.nssakura.section.db.BaseHandlerSqlDefault" scope="singleton" />
+  <bean id="org.sakaiproject.nssakura.section.db.BaseHandlerSqlOracle" class="org.sakaiproject.nssakura.section.db.BaseHandlerSqlOracle" scope="singleton" />
+  <bean id="org.sakaiproject.nssakura.section.db.BaseHandlerSqlMySql" class="org.sakaiproject.nssakura.section.db.BaseHandlerSqlMySql" scope="singleton" />
+
+  <!--  SakaiProxy -->
+   <bean id="org.sakaiproject.nssakura.section.logic.SakaiProxy"
+      class="org.sakaiproject.nssakura.section.logic.SakaiProxyImpl"
+        init-method="init">
+        <!-- API injection -->
+        <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+        <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+        <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
+        <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
+    <property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService" />
+    <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+    <property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+    <property name="sectionManager" ref="org.sakaiproject.section.api.SectionManager" />
+    <property name="sectionAwareness" ref="org.sakaiproject.section.api.SectionAwareness"/>
+    <property name="sqlService" ref="org.sakaiproject.db.api.SqlService"/>
+    <property name="databaseBeans">
+           <map>
+              <entry key="default"><ref bean="org.sakaiproject.nssakura.section.db.BaseHandlerSqlDefault"/></entry>
+              <entry key="oracle" ><ref bean="org.sakaiproject.nssakura.section.db.BaseHandlerSqlOracle" /></entry>
+              <entry key="mysql"  ><ref bean="org.sakaiproject.nssakura.section.db.BaseHandlerSqlMySql"  /></entry>
+           </map>
+        </property>
+  </bean>
+
+  <!-- ProjectLogic -->
+  <bean id="org.sakaiproject.nssakura.section.logic.ProjectLogic"
+      class="org.sakaiproject.nssakura.section.logic.ProjectLogicImpl"
+      init-method="init" >
+      <property name="sakaiProxy" ref="org.sakaiproject.nssakura.section.logic.SakaiProxy" />
+      <property name="nssakuraSection" ref="org.sakaiproject.nssakura.section.logic.NssakuraSection" />
+    </bean>
+
+  <!--  register the DAO as a transactional interceptor. Use the classloader proxy from gendao because this is a protected DAO -->
+  <bean
+    id="org.sakaiproject.nssakura.section.dao.NSSectionJobDao"
+    class="org.sakaiproject.genericdao.springutil.CurrentClassLoaderTxProxyFactoryBean">
+    <property name="transactionManager" ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+    <property name="target" ref="org.sakaiproject.nssakura.section.dao.NSSectionJobDaoTarget" />
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+  <!--  NSSakuraSection -->
+   <bean id="org.sakaiproject.nssakura.section.logic.NssakuraSection"
+      class="org.sakaiproject.nssakura.section.logic.NssakuraSectionImpl"
+        init-method="init">
+        <!-- API injection -->
+    <property name="sectionManager" ref="org.sakaiproject.section.api.SectionManager" />
+    <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+      <property name="sakaiProxy" ref="org.sakaiproject.nssakura.section.logic.SakaiProxy" />
+  </bean>
+
+  <!-- setup a DAO, accessed via the transaction proxy -->
+  <bean
+    id="org.sakaiproject.nssakura.section.dao.NSSectionJobDaoTarget"
+    class="org.sakaiproject.nssakura.section.dao.NSSectionJobDaoImpl"
+    init-method="init">
+    <property name="sessionFactory" ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+  </bean>
+
+  <!-- Add our HBM files to the Sakai global session factory -->
+  <bean
+    id="org.sakaiproject.nssakura.section.hbm.HBMMappingList"
+    class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+    <property name="mappingResources">
+      <list>
+        <value>org/sakaiproject/nssakura/section/hbm/NSSectionJob.hbm.xml</value>
+      </list>
+    </property>
+  </bean>
+</beans>

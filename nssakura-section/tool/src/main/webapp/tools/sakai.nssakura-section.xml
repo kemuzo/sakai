@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<registration>
+	<tool id="sakai.nssakura-section" 
+		title="Organization Manage" 
+		description="This tool is to manage organization.">
+
+		<category name="course" />
+      	<category name="project" />
+
+		<configuration name="functions.require" value="section.role.instructor|section.role.ta"/> 
+		
+    </tool>
+</registration>
+
